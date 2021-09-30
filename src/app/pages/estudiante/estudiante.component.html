@@ -4,7 +4,7 @@
     <!-- Header container -->
     <div class="container-fluid d-flex align-items-center">
         <div class="row">
-            <div class="col-lg-7 col-md-10">
+            <div class="col-lg-12">
                 <h1 class="display-2 text-white">Creación de Estudiantes</h1>
                 <p class="text-white mt-0 mb-5">Desde este forulario puede crear estudiantes</p>
             </div>
@@ -12,91 +12,88 @@
     </div>
 </div>
 <div class="container-fluid mt--7">
+    <!-- Table Dark-->
     <div class="row">
-        <div class="col-xl-8 order-xl-1">
-            <div class="card bg-secondary shadow">
-                <div class="card-header bg-white border-0">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <h3 class="mb-0">Estudiante</h3>
-                        </div>
-                    </div>
+        <div class="col">
+            <div class="card bg-default shadow">
+                <div class="card-header bg-transparent border-0">
+                    <h3 class="text-white mb-0">Estudiantes </h3>
                 </div>
-                <div class="card-body">
-                    <form>
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-username">Username</label>
-                                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="lucky.jesse">
+                <div class="table-responsive">
+                    <table class="table align-items-center table-dark table-flush">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Correo Personal</th>
+                                <th scope="col">DPI</th>
+                                <th scope="col">Carnet</th>
+                                <th scope="col">Jornada</th>
+                                <th scope="col">Facultad</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let estudiante of estudiantes" id="estudiante_{{ estudiante.id }}">
+                                <td>{{ estudiante.id }}</td>
+                                <td class="nombre">
+                                    <span class="valor">{{ estudiante.nombre }}</span>
+                                    <input type="text" value="{{ estudiante.nombre }}" id="{{estudiante.id}}_nombre" class="form-control d-none" (change)="editarRegistro(estudiante.id)">
+                                </td>
+                                <td class="correo_personal">
+                                    <span class="valor">{{ estudiante.correo_personal }}</span>
+                                    <input type="mail" value="{{ estudiante.correo_personal }}" id="{{estudiante.id}}_correo_personal" class="form-control d-none" (change)="editarRegistro(estudiante.id)">
+                                </td>
+                                <td class="dpi">
+                                    <span class="valor"> {{ estudiante.dpi }} </span>
+                                    <input type="number" value="{{ estudiante.dpi }}" id="{{estudiante.id}}_dpi" class="form-control d-none" (change)="editarRegistro(estudiante.id)">
+                                </td>
+                                <td class="carnet">
+                                    <span class="valor">{{ estudiante.carnet }}</span>
+                                    <input type="number" value="{{ estudiante.carnet }}" id="{{estudiante.id}}_carnet" class="form-control d-none" (change)="editarRegistro(estudiante.id)">
+                                </td>
+                                <td class="jornada">
+                                    <span class="valor">{{ estudiante.jornada }}</span>
+                                    <select name="{{estudiante.id}}_jornada" id="{{estudiante.id}}_jornada" class="d-none custom-select" (change)="editarRegistro(estudiante.id)">
+                                        <option value="N">Nocturna</option>
+                                        <option value="M">Matutina</option>
+                                    </select>
+                                </td>
+                                <td class="facultad">
+                                    <span class="valor">{{ estudiante.facultad.nombre }}</span>
+                                    <select name="{{estudiante.id}}_facultad" id="{{estudiante.id}}_facultad" class="d-none custom-select" (change)="editarRegistro(estudiante.id)">
+                                        <option *ngFor="let facultad of FACULTADES" value="{{facultad.id}}" [attr.selected]="estudiante.facultad.id == facultad.id ? true : null" >{{facultad.nombre}}</option>
+                                    </select>
+                                </td>
+                                <td class="text-right">
+                                    <div ngbDropdown placement="bottom-right" class="no-cambiar">
+                                        <a class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </a>
+                                        <div ngbDropdownMenu class=" dropdown-menu-right dropdown-menu-arrow">
+                                            <a class="dropdown-item" (click)="activarEdicion(estudiante.id,$event.target)" href="javascript:void(0)">Editar</a>
+                                            <a class="dropdown-item" (click)="eliminarRegistro(estudiante.id)" href="javascript:void(0)">Eliminar</a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-email">Email address</label>
-                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com">
-                                    </div>
-                                </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-default shadow py-4 ">
+                    <nav aria-label="... ">
+                        <ul class="pagination justify-content-end mb-0 ">
+                            <div class="d-flex justify-content-between p-2 ">
+                                <ngb-pagination [collectionSize]="collectionSize " [(page)]="page " [pageSize]="pageSize " (pageChange)="refrescar() ">
+                                </ngb-pagination>
+                                <select class="custom-select " style="width: auto " [(ngModel)]="pageSize " (ngModelChange)="refrescar() ">
+                                    <option [ngValue]="10">10 registros por página</option>
+                                    <option [ngValue]="15">15 registros por página</option>
+                                    <option [ngValue]="20">20 registros por página</option>
+                                </select>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-first-name">First name</label>
-                                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="Lucky">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-last-name">Last name</label>
-                                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="my-4" />
-                        <!-- Address -->
-                        <h6 class="heading-small text-muted mb-4">Contact information</h6>
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-address">Address</label>
-                                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-city">City</label>
-                                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-country">Country</label>
-                                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-country">Postal code</label>
-                                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="my-4" />
-                        <!-- Description -->
-                        <h6 class="heading-small text-muted mb-4">About me</h6>
-                        <div class="pl-lg-4">
-                            <div class="form-group">
-                                <label>About Me</label>
-                                <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                            </div>
-                        </div>
-                    </form>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
