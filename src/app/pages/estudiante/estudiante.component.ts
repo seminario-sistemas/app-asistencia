@@ -4,6 +4,7 @@ import { EstudianteService } from 'src/app/_service/estudiante.service';
 import { FacultadService } from 'src/app/_service/facultad.service';
 import { Estudiante } from 'src/app/_model/estudiante';
 import { Facultad } from 'src/app/_model/facultad';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-estudiante',
@@ -16,12 +17,45 @@ export class EstudianteComponent implements OnInit {
 
   public ESTUDIANTES: Estudiante[] = [];
   public estudiantes: Estudiante[] = [];
+  public campos = [{
+    label: 'Nombre del Estudiante',
+    type: 'text',
+    placeholder: 'Ingrese el nombre del Estudiante',
+    id: 'nombre'
+  },{
+    label: 'Correo Personal',
+    type: 'mail',
+    placeholder: 'Escriba el correo del Estudiante',
+    id: 'correo_personal'
+  },{
+    label: 'DPI del Estudiante',
+    type: 'number',
+    placeholder: 'Ingrese el DPI del Estudiante',
+    id: 'dpi'
+  },{
+    label: 'Carnet del Estudiante',
+    type: 'number',
+    placeholder: 'Ingrese el carnet del Estudiante',
+    id: 'carnet'
+  },{
+    label: 'Jornada',
+    type: 'text',
+    placeholder: 'Ingrese la jornada del Estudiante',
+    id: 'joranada'
+  },{
+    label: 'Facultad',
+    type: 'number',
+    placeholder: 'Escoja la facultad del Estudiante',
+    id: 'facultad'
+  }]
 
   public page = 1;
   public pageSize = 10;
   public collectionSize = this.ESTUDIANTES.length;
 
-  constructor(private estudianteService: EstudianteService,private facultadService: FacultadService, @Inject(DOCUMENT) document) {
+  constructor(private estudianteService: EstudianteService,
+    private facultadService: FacultadService, @Inject(DOCUMENT) document, 
+    private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -30,6 +64,10 @@ export class EstudianteComponent implements OnInit {
       this.FACULTADES = data
     })
 
+  }
+
+  open(content) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then();
   }
 
   listar(){
@@ -56,6 +94,23 @@ export class EstudianteComponent implements OnInit {
       })
     })
     boton.innerHTML = boton.innerHTML == 'Cancelar' ? 'Editar' : 'Cancelar';
+  }
+
+  agregarRegistro() {
+    this.modalService.dismissAll();
+    var info = {};
+    this.campos.forEach(element => {
+      if(element.id != 'facultad'){
+        info[element.id] = (<HTMLInputElement>document.getElementById(`${element.id}`)).value; 
+      }else{
+        info[element.id] = new Facultad({id:(<HTMLInputElement>document.getElementById(`${element.id}`)).value});
+      }
+      
+    });
+    var estudiante = new Estudiante(info);
+    this.estudianteService.registrar(estudiante).subscribe(data => {
+      this.listar()
+    })
   }
 
   editarRegistro(idEstudiante: number) {

@@ -7,6 +7,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { InicioComponent } from '../../pages/inicio/inicio.component';
+import { FacultadComponent } from '../../pages/facultad/facultad.component';
 import { EstudianteComponent } from '../../pages/estudiante/estudiante.component';
 import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
 import { IconsComponent } from '../../pages/icons/icons.component';
@@ -27,6 +28,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   ],
   declarations: [
     InicioComponent,
+    FacultadComponent,
     EstudianteComponent,
     DashboardComponent,
     UserProfileComponent,
